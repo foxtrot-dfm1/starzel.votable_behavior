@@ -1,0 +1,6 @@
+[report]
+include =
+    src/starzel/*
+omit =
+    */test*
+    */upgrades/*
