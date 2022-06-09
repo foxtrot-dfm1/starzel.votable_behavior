@@ -1,7 +1,10 @@
+
+  
+# encoding=utf-8
 from starzel.votable_behavior.interfaces import IVotable, IVoting
 from hashlib import md5
-from BTrees.OIBTree import OIBTree
-from BTrees.OOBTree import OOBTree
+from persistent.dict import PersistentDict
+from persistent.list import PersistentList
 from Products.CMFPlone.utils import safe_bytes
 from zope.annotation.interfaces import IAnnotations
 from zope.component import adapter
@@ -21,9 +24,12 @@ class Vote(object):
         self.context = context
         annotations = IAnnotations(context)
         if KEY not in annotations.keys():
-            self.clear()
-        else:
-            self.annotations = annotations[KEY]
+            # You know what happens if we don't use persistent classes here?
+            annotations[KEY] = PersistentDict({
+                "voted": PersistentList(),
+                'votes': PersistentDict()
+                })
+        self.annotations = annotations[KEY]
 
     @property
     def votes(self):
@@ -48,13 +54,15 @@ class Vote(object):
         return hash.hexdigest()
 
     def vote(self, vote, request):
-        if self.already_voted(request):
-            raise KeyError("You may not vote twice")
         vote = int(vote)
-        self.annotations['voted'].insert(
-            self._hash(request),
-            len(self.annotations['voted']))
-        votes = self.annotations['votes']
+        if self.already_voted(request):
+            # Exceptions can create ugly error messages. If you or your user
+            # can't resolve the error, you should not catch it.
+            # Transactions can throw errors too.
+            # What happens if you catch them?
+            raise KeyError("You may not vote twice")
+        self.annotations['voted'].append(self._hash(request))
+        votes = self.annotations.get('votes', {})
         if vote not in votes:
             votes[vote] = 1
         else:
@@ -79,7 +87,6 @@ class Vote(object):
 
     def clear(self):
         annotations = IAnnotations(self.context)
-        annotations[KEY] = OOBTree()
-        annotations[KEY]['voted'] = OIBTree()
-        annotations[KEY]['votes'] = OOBTree()
+        annotations[KEY] = PersistentDict({'voted': PersistentList(),
+                                           'votes': PersistentDict()})
         self.annotations = annotations[KEY]
