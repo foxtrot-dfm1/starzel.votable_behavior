@@ -11,6 +11,7 @@
   <includeDependencies package="." />
 
   <include package=".behavior" />
+
   <include package=".restapi" />
 
   <!-- Register an extension profile to make the product installable
