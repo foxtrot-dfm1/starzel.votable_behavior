@@ -26,6 +26,9 @@
     :target: https://pypi.python.org/pypi/starzel.votable_behavior/
     :alt: License
 
+Add-on that implements votable behavior for plone contents
+==========
+
 
 ========================
 starzel.votable_behavior
