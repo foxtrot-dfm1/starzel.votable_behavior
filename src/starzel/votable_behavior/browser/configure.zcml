@@ -1,21 +1,33 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser"
-    xmlns:plone="http://namespaces.plone.org/plone"
-    i18n_domain="starzel.votable_behavior">
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser"
+  i18n_domain="starzel.votable_behavior">
 
-  <!-- Set overrides folder for Just-a-Bunch-Of-Templates product -->
-  <include package="z3c.jbot" file="meta.zcml" />
-  <browser:jbot
-      directory="overrides"
-      layer="starzel.votable_behavior.interfaces.IStarzelVotableBehaviorLayer"
-      />
+  <browser:viewlet
+    name="voting"
+    for="starzel.votable_behavior.interfaces.IVotable"
+    manager="plone.app.layout.viewlets.interfaces.IBelowContentTitle"
+    template="templates/voting_viewlet.pt"
+    layer="..interfaces.IVotableLayer"
+    class=".viewlets.Vote"
+    permission="starzel.votable_behavior.view_vote"
+    />
 
-  <!-- Publish static files -->
-  <plone:static
-      name="starzel.votable_behavior"
-      type="plone"
-      directory="static"
-      />
+  <browser:page
+    name="vote"
+    for="starzel.votable_behavior.interfaces.IVotable"
+    layer="..interfaces.IVotableLayer"
+    class=".vote.Vote"
+    permission="starzel.votable_behavior.do_vote"
+    />
+
+  <browser:page
+    name="clearvotes"
+    for="starzel.votable_behavior.interfaces.IVotable"
+    layer="..interfaces.IVotableLayer"
+    class=".vote.ClearVotes"
+    permission="zope2.ViewManagementScreens"
+    />
+
 
 </configure>
