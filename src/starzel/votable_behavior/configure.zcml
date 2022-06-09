@@ -10,7 +10,7 @@
   <!-- Include configuration for dependencies listed in setup.py -->
   <includeDependencies package="." />
 
-  permission
+  <permission
       id="starzel.votable_behavior.view_vote"
       title="starzel.votable_behavior: View Vote"
       />
@@ -19,6 +19,10 @@
       id="starzel.votable_behavior.do_vote"
       title="starzel.votable_behavior: Do Vote"
       />
+
+  <browser:resourceDirectory
+    name="starzel.votable_behavior"
+    directory="resources" />
 
   <include package=".behavior" />
   <include package=".browser" />
